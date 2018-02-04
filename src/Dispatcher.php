@@ -4,8 +4,12 @@ namespace Nip\Dispatcher;
 
 use Exception;
 use Nip\AutoLoader\AutoLoader;
+use Nip\Container\Container;
+use Nip\Container\ContainerAwareTrait;
 use Nip\Controller;
 use Nip\Dispatcher\Exceptions\ForwardException;
+use Nip\Dispatcher\Resolver\HasResolverPipelineTrait;
+use Nip\Dispatcher\Traits\HasRequestTrait;
 use Nip\Http\Response\Response;
 use Nip\Request;
 
@@ -15,11 +19,9 @@ use Nip\Request;
  */
 class Dispatcher
 {
-
-    /**
-     * @var null|Request
-     */
-    protected $request = null;
+    use HasRequestTrait;
+    use HasResolverPipelineTrait;
+    use ContainerAwareTrait;
 
     protected $currentController = false;
 
@@ -28,24 +30,14 @@ class Dispatcher
     protected $maxHops = 30;
 
     /**
-     * @param $controller
-     * @return mixed
+     * Create a new controller dispatcher instance.
+     *
+     * @param  Container  $container
+     * @return void
      */
-    public static function reverseControllerName($controller)
+    public function __construct(Container $container)
     {
-        return inflector()->unclassify($controller);
-    }
-
-    /**
-     * @param boolean $name
-     * @return mixed
-     */
-    public static function formatActionName($name)
-    {
-        $name = inflector()->camelize($name);
-        $name[0] = strtolower($name[0]);
-
-        return $name;
+        $this->setContainer($container);
     }
 
     /**
@@ -89,19 +81,12 @@ class Dispatcher
     }
 
     /**
-     * @return Request
+     * @param $controller
+     * @return mixed
      */
-    public function getRequest()
+    public static function reverseControllerName($controller)
     {
-        return $this->request;
-    }
-
-    /**
-     * @param Request|null $request
-     */
-    public function setRequest($request)
-    {
-        $this->request = $request;
+        return inflector()->unclassify($controller);
     }
 
     /**
@@ -111,8 +96,6 @@ class Dispatcher
      */
     public function generateController($request)
     {
-        $module = $this->formatModuleName($request->getModuleName());
-        $controller = $this->formatControllerName($request->getControllerName());
 
         $namespaceClass = $this->generateFullControllerNameNamespace($module, $controller);
         if ($this->isValidControllerNamespace($namespaceClass)) {
@@ -126,37 +109,6 @@ class Dispatcher
         throw new Exception(
             'Error finding a valid controller [' . $namespaceClass . '][' . $classicClass . '] for [' . $request->getMCA() . ']'
         );
-    }
-
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    public function formatModuleName($name)
-    {
-        $name = $name ? $name : 'default';
-
-        return inflector()->camelize($name);
-    }
-
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    public function formatControllerName($name)
-    {
-        $name = $name ? $name : 'index';
-
-        return $this->getControllerName($name);
-    }
-
-    /**
-     * @param $controller
-     * @return mixed
-     */
-    public function getControllerName($controller)
-    {
-        return inflector()->classify($controller);
     }
 
     /**
@@ -175,22 +127,6 @@ class Dispatcher
     }
 
     /**
-     * @param string $namespaceClass
-     * @return bool
-     */
-    protected function isValidControllerNamespace($namespaceClass)
-    {
-        return class_exists($namespaceClass);
-//        $loader = $this->getAutoloader()->getPsr4ClassLoader();
-//        $loader->load($namespaceClass);
-//        if ($loader->isLoaded($namespaceClass)) {
-//            return true;
-//        }
-//
-//        return false;
-    }
-
-    /**
      * @param string $class
      * @return Controller
      */
@@ -201,16 +137,6 @@ class Dispatcher
         $controller->setDispatcher($this);
 
         return $controller;
-    }
-
-    /**
-     * @param $module
-     * @param $controller
-     * @return string
-     */
-    protected function generateFullControllerNameString($module, $controller)
-    {
-        return $module . "_" . $controller . "Controller";
     }
 
     /**
