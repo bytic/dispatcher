@@ -1,5 +1,5 @@
 {
-  "name": "bytic/inflector",
+  "name": "bytic/dispatcher",
   "type": "library",
   "description": "Php Framework",
   "homepage": "https://github.com/bytic/inflector",
@@ -12,23 +12,19 @@
   ],
   "autoload": {
     "psr-4": {
-      "Nip\\Inflector\\": "src"
-    },
-    "classmap": [
-      "src"
-    ],
-    "files": [
-      "src/functions/application.php"
-    ]
+      "Nip\\Dispatcher\\": "src"
+    }
   },
   "autoload-dev": {
     "psr-4": {
-      "Nip\\Inflector\\Tests\\": "tests/"
+      "Nip\\Dispatcher\\Tests\\": "tests/"
     }
   },
   "require": {
     "php": "^7.0",
-    "bytic/container": "^1.0"
+    "bytic/container": "^1.0",
+    "bytic/http": "^1.0",
+    "bytic/inflector": "^1.0"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "^3.0",
