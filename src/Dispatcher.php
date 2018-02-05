@@ -49,12 +49,12 @@ class Dispatcher
         }
 
         $command = CommandFactory::createFromRequest($request);
-        return $this->dispatchCommand($command);
+        return $this->dispatchCommand($command)->getResponse();
     }
 
     /**
      * @param Command $command
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return Command
      */
     public function dispatchCommand(Command $command)
     {

@@ -2,6 +2,8 @@
 
 namespace Nip\Dispatcher\Resolver\Pipeline\Stages;
 
+use Nip\Dispatcher\Exceptions\InvalidCommandException;
+
 /**
  * Class ClassInstanceStage
  * @package Nip\Dispatcher\Resolver\Pipeline\Stages
@@ -15,7 +17,7 @@ class ActionCallStage extends AbstractStage
     public function processCommand()
     {
         if (!$this->hasInstanceAction()) {
-            throw new \Exception(
+            throw new InvalidCommandException(
                 "No valid instance for callback in dispatcher command " .
                 "[" . print_r($this->getCommand(), true) . "]"
             );

@@ -2,7 +2,11 @@
 
 namespace Nip\Dispatcher\Resolver\Pipeline;
 
+use League\Pipeline\InterruptibleProcessor;
 use League\Pipeline\PipelineBuilder as AbstractBuilder;
+use League\Pipeline\PipelineInterface;
+use League\Pipeline\ProcessorInterface;
+use Nip\Dispatcher\Commands\Command;
 use Nip\Dispatcher\Resolver\Pipeline\Stages\ActionCallStage;
 use Nip\Dispatcher\Resolver\Pipeline\Stages\ClassInstanceStage;
 use Nip\Dispatcher\Resolver\Pipeline\Stages\ClosureStage;
@@ -22,5 +26,24 @@ class PipelineBuilder extends AbstractBuilder
         $this->add(new ModuleControllerStage());
         $this->add(new ClassInstanceStage());
         $this->add(new ActionCallStage());
+    }
+
+    /**
+     * Build a new Pipeline object
+     *
+     * @param  ProcessorInterface|null $processor
+     *
+     * @return PipelineInterface
+     */
+    public function build(ProcessorInterface $processor = null)
+    {
+        if ($processor == null) {
+            $processor = new InterruptibleProcessor(
+                function (Command $command) {
+                    return !$command->hasResponse();
+                }
+            );
+        }
+        return parent::build($processor);
     }
 }

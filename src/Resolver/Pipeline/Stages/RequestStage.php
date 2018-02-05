@@ -78,7 +78,7 @@ class RequestStage extends AbstractStage
      */
     protected function hasRequestMCA()
     {
-        return $this->getRequest()->getControllerName() !== null;
+        return $this->getCommand()->hasRequest() && $this->getRequest()->getControllerName() !== null;
     }
 
     /**

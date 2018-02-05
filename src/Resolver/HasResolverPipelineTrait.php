@@ -22,7 +22,7 @@ trait HasResolverPipelineTrait
 
     /**
      * @param Command $command
-     * @return ResponseInterface
+     * @return Command
      * @throws ForwardException
      */
     protected function processCommand(Command $command)
@@ -36,13 +36,7 @@ trait HasResolverPipelineTrait
      */
     protected function buildCallPipeline()
     {
-        return $this->getCallPipelineBuilder()->build(
-            (
-            new InterruptibleProcessor(function (Command $command) {
-                return !$command->hasResponse();
-            })
-            )
-        );
+        return $this->getCallPipelineBuilder()->build();
     }
 
     /**
