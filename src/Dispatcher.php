@@ -3,14 +3,14 @@
 namespace Nip\Dispatcher;
 
 use Exception;
-use Nip\AutoLoader\AutoLoader;
 use Nip\Container\Container;
 use Nip\Container\ContainerAwareTrait;
-use Nip\Controller;
+use Nip\Dispatcher\Commands\Command;
+use Nip\Dispatcher\Commands\CommandFactory;
 use Nip\Dispatcher\Exceptions\ForwardException;
 use Nip\Dispatcher\Resolver\HasResolverPipelineTrait;
+use Nip\Dispatcher\Traits\HasCommandsCollection;
 use Nip\Dispatcher\Traits\HasRequestTrait;
-use Nip\Http\Response\Response;
 use Nip\Request;
 
 /**
@@ -19,132 +19,56 @@ use Nip\Request;
  */
 class Dispatcher
 {
-    use HasRequestTrait;
-    use HasResolverPipelineTrait;
     use ContainerAwareTrait;
-
-    protected $currentController = false;
-
-    protected $hops = 0;
-
-    protected $maxHops = 30;
+    use HasResolverPipelineTrait;
+    use HasRequestTrait;
+    use HasCommandsCollection;
 
     /**
      * Create a new controller dispatcher instance.
      *
-     * @param  Container  $container
+     * @param  Container $container
      * @return void
      */
-    public function __construct(Container $container)
+    public function __construct(Container $container = null)
     {
-        $this->setContainer($container);
+        if ($container instanceof Container) {
+            $this->setContainer($container);
+        }
     }
 
     /**
      * @param Request|null $request
-     * @return null|Response
+     * @return \Psr\Http\Message\ResponseInterface
      * @throws Exception
      */
     public function dispatch(Request $request = null)
     {
         if ($request) {
             $this->setRequest($request);
-        } else {
-            $request = $this->getRequest();
         }
-        $this->hops++;
 
-        if ($this->hops <= $this->maxHops) {
-            if ($request->getControllerName() == null) {
-                throw new Exception('No valid controller name in request [' . $request->getMCA() . ']');
-            }
+        $command = CommandFactory::createFromRequest($request);
+        return $this->dispatchCommand($command);
+    }
 
-            $controller = $this->generateController($request);
+    /**
+     * @param Command $command
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    public function dispatchCommand(Command $command)
+    {
+        $this->getCommandsCollection()[] = $command;
 
-            if ($controller instanceof Controller) {
-                try {
-                    $this->currentController = $controller;
-                    $controller->setRequest($request);
 
-                    return $controller->dispatch();
-                } catch (ForwardException $e) {
-                    $return = $this->dispatch();
+        try {
+            return $this->processCommand($command);
+        } catch (ForwardException $exception) {
+            $command = CommandFactory::createFromForwardExecption($exception);
+            $return = $this->dispatchCommand($command);
 
-                    return $return;
-                }
-            } else {
-                throw new Exception('Error finding a valid controller for [' . $request->getMCA() . ']');
-            }
-        } else {
-            throw new Exception("Maximum number of hops ($this->maxHops) has been reached for {$request->getMCA()}");
+            return $return;
         }
-    }
-
-    /**
-     * @param $controller
-     * @return mixed
-     */
-    public static function reverseControllerName($controller)
-    {
-        return inflector()->unclassify($controller);
-    }
-
-    /**
-     * @param Request $request
-     * @return Controller|null
-     * @throws Exception
-     */
-    public function generateController($request)
-    {
-
-        $namespaceClass = $this->generateFullControllerNameNamespace($module, $controller);
-        if ($this->isValidControllerNamespace($namespaceClass)) {
-            return $this->newController($namespaceClass);
-        } else {
-            $classicClass = $this->generateFullControllerNameString($module, $controller);
-            if ($this->getAutoloader()->isClass($classicClass)) {
-                return $this->newController($classicClass);
-            }
-        }
-        throw new Exception(
-            'Error finding a valid controller [' . $namespaceClass . '][' . $classicClass . '] for [' . $request->getMCA() . ']'
-        );
-    }
-
-    /**
-     * @param $module
-     * @param $controller
-     * @return string
-     */
-    protected function generateFullControllerNameNamespace($module, $controller)
-    {
-        $name = app('app')->getRootNamespace() . 'Modules\\';
-        $module = $module == 'Default' ? 'Frontend' : $module;
-        $name .= $module . '\Controllers\\';
-        $name .= str_replace('_', '\\', $controller) . "Controller";
-
-        return $name;
-    }
-
-    /**
-     * @param string $class
-     * @return Controller
-     */
-    public function newController($class)
-    {
-        $controller = new $class();
-        /** @var Controller $controller */
-        $controller->setDispatcher($this);
-
-        return $controller;
-    }
-
-    /**
-     * @return AutoLoader
-     */
-    protected function getAutoloader()
-    {
-        return app('autoloader');
     }
 
     /**
@@ -194,13 +118,5 @@ class Dispatcher
         }
 
         throw new ForwardException;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getCurrentController()
-    {
-        return $this->currentController;
     }
 }

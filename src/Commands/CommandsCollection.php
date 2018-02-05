@@ -3,8 +3,8 @@
 namespace Nip\Dispatcher\Commands;
 
 use ArrayAccess;
+use Exception;
 use Iterator;
-use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class CommandsStack
@@ -19,12 +19,11 @@ class CommandsCollection implements ArrayAccess, Iterator
     protected $maxHops = 30;
 
     /**
-     * @param ServerRequestInterface|null $request
+     * @return bool
      */
-    public function addFromRequest(ServerRequestInterface $request = null)
+    public function overflow()
     {
-        $command = CommandFactory::createFromRequest($request);
-        $this->items[] = $command;
+        return $this->getHops() > $this->getMaxHops();
     }
 
     /**
@@ -41,6 +40,22 @@ class CommandsCollection implements ArrayAccess, Iterator
     public function setMaxHops(int $maxHops)
     {
         $this->maxHops = $maxHops;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHops(): int
+    {
+        return $this->hops;
+    }
+
+    /**
+     * @param int $hops
+     */
+    public function setHops(int $hops)
+    {
+        $this->hops = $hops;
     }
 
     /**
@@ -61,11 +76,21 @@ class CommandsCollection implements ArrayAccess, Iterator
 
     /**
      * @inheritdoc
+     * @param Command $value
      */
     public function offsetSet($offset, $value)
     {
-        $this->items[$offset] = $value;
-        $this->hops = count($this);
+        if ($offset == null) {
+            $this->items[] = $value;
+        } else {
+            $this->items[$offset] = $value;
+        }
+        $this->hops = count($this->items);
+        if ($this->overflow()) {
+            throw new Exception(
+                "Maximum number of hops ($this->maxHops) has been reached for {$value->getString()}"
+            );
+        }
     }
 
     /**

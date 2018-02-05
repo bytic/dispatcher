@@ -4,6 +4,7 @@ namespace Nip\Dispatcher\Resolver;
 
 use League\Pipeline\InterruptibleProcessor;
 use Nip\Dispatcher\Commands\Command;
+use Nip\Dispatcher\Exceptions\ForwardException;
 use Nip\Dispatcher\Resolver\Pipeline\PipelineBuilder;
 use Nip\Dispatcher\Resolver\Pipeline\Stages\StageInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -22,8 +23,9 @@ trait HasResolverPipelineTrait
     /**
      * @param Command $command
      * @return ResponseInterface
+     * @throws ForwardException
      */
-    protected function resolveCommand(Command $command)
+    protected function processCommand(Command $command)
     {
         $pipeline = $this->buildCallPipeline();
         return $pipeline->process($command);

@@ -15,4 +15,20 @@ class Command
     use HasRequestTrait;
     use HasResponseTrait;
     use HasActionTrait;
+
+    /**
+     * @return string
+     */
+    public function getString()
+    {
+        if ($this->hasAction()) {
+            return print_r($this->getAction(), true);
+        }
+
+        if ($this->hasRequest()) {
+            return print_r($this->getRequest()->getMCA(), true);
+        }
+
+        return print_r($this, true);
+    }
 }
