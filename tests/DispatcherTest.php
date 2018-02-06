@@ -49,6 +49,19 @@ class DispatcherTest extends AbstractTest
         self::assertSame('value', $response->getContent());
     }
 
+    public function testRequestModuleController()
+    {
+        $command = new Command();
+        $command->setAutoInitRequest(true);
+        $command->getRequest(true)
+            ->setModuleName('Frontend')
+            ->setControllerName('BaseTrait');
+
+        $response = $this->object->dispatchCommand($command)->getResponse();
+        self::assertInstanceOf(ResponseInterface::class, $response);
+        self::assertEquals('index response', $response->getContent());
+    }
+
     protected function setUp()
     {
         parent::setUp();

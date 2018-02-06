@@ -42,10 +42,9 @@ trait HasActionTrait
      */
     public function setActionParam($name, $value)
     {
-        if (is_array($this->action)) {
-            $this->action[$name] = $value;
-        }
-        throw new \Exception("Command Action is not an array");
+        $this->guardActionAsArray();
+
+        $this->action[$name] = $value;
     }
 
     /**
@@ -56,12 +55,22 @@ trait HasActionTrait
      */
     public function getActionParam($name)
     {
-        if (is_array($this->action)) {
-            return $this->action[$name];
-        }
-        throw new \Exception("Command Action is not an array");
+        $this->guardActionAsArray();
+
+        return isset($this->action[$name]) ? $this->action[$name] : null;
     }
 
+    /**
+     * @throws \Exception
+     */
+    protected function guardActionAsArray()
+    {
+        if (!is_array($this->action) && $this->action !== null) {
+            throw new \Exception(
+                "Command Action is not an array, [" . print_r($this->action, true) . "]"
+            );
+        }
+    }
 
     /**
      * @param $name

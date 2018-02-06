@@ -2,7 +2,10 @@
 
 namespace Nip\Dispatcher\Resolver\Pipeline\Stages;
 
+use Nip\Controllers\Controller;
 use Nip\Dispatcher\Exceptions\InvalidCommandException;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class ClassInstanceStage
@@ -22,15 +25,18 @@ class ActionCallStage extends AbstractStage
                 "[" . print_r($this->getCommand(), true) . "]"
             );
         }
-        $this->invokeAction();
+
+        $response = $this->invokeAction();
+        $this->getCommand()->setResponse($response);
     }
 
     /**
-     * @return mixed
+     * @return ResponseInterface
      * @throws \Exception
      */
     protected function invokeAction()
     {
+        /** @var Controller $controllerInstance */
         $controllerInstance = $this->getCommand()->getActionParam('instance');
         $method = $this->getCommand()->getActionParam('action');
         if (method_exists($controllerInstance, 'callAction')) {

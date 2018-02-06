@@ -15,7 +15,7 @@ class ModuleControllerStage extends AbstractStage
     public function processCommand()
     {
         if ($this->hasControllerName()) {
-            $this->saveActionParamsInCommand();
+            $this->parseActionForController();
         }
     }
 
@@ -33,22 +33,39 @@ class ModuleControllerStage extends AbstractStage
 
     /**
      */
-    public function saveActionParamsInCommand()
+    public function parseActionForController()
     {
         $action = $this->getCommand()->getAction();
         $module = isset($action['module']) ? $action['module'] : '';
         $controller = isset($action['controller']) ? $action['controller'] : '';
 
-        $namespaceClass = $this->generateFullControllerNameNamespace($module, $controller);
-        if ($this->isValidControllerNamespace($namespaceClass)) {
-            $action['class'] = $namespaceClass;
-        } else {
-            $classicClass = $this->generateFullControllerNameString($module, $controller);
-            if (class_exists($classicClass)) {
-                $action['class'] = $classicClass;
-            }
-        }
-        $this->getCommand()->setAction($action);
+        $classes = [
+            $this->generateFullControllerNameNamespace($module, $controller),
+            $this->generateFullControllerNameString($module, $controller)
+            ];
+        $this->saveClassesInAction($classes);
+    }
+
+    /**
+     * @param $classes
+     * @throws \Exception
+     */
+    protected function saveClassesInAction($classes)
+    {
+        $class = $this->prepareClassAction($this->getCommand()->getActionParam('class'));
+        $class = array_merge($class, $classes);
+        $this->getCommand()->setActionParam('class', $class);
+    }
+
+    /**
+     * @param $class
+     * @return array|null
+     */
+    protected function prepareClassAction($class)
+    {
+        $class = $class != null ? $class : [];
+        $class = is_array($class) ? $class : [$class];
+        return $class;
     }
 
 
