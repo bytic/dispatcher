@@ -38,6 +38,7 @@ class ActionCallStage extends AbstractStage
     {
         /** @var Controller $controllerInstance */
         $controllerInstance = $this->getCommand()->getActionParam('instance');
+        $controllerInstance->setRequest($this->getCommand()->getRequest());
         $method = $this->getCommand()->getActionParam('action');
         if (method_exists($controllerInstance, 'callAction')) {
             return $controllerInstance->callAction($method);
