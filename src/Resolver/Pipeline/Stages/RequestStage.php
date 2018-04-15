@@ -2,6 +2,8 @@
 
 namespace Nip\Dispatcher\Resolver\Pipeline\Stages;
 
+use Nip\Dispatcher\Resolver\ClassResolver\NameFormatter;
+
 /**
  * Class ClosureStage
  * @package Nip\Dispatcher\Resolver\Pipeline\Stages
@@ -21,56 +23,14 @@ class RequestStage extends AbstractStage
     protected function saveRequestParamsInCommand()
     {
         $request = $this->getRequest();
-        $action = [
-            'module' => $this->formatModuleName($request->getModuleName()),
-            'controller' => $this->formatControllerName($request->getControllerName()),
-            'action' => $this->formatActionName($request->getActionName()),
-        ];
+
+        $action = NameFormatter::formatArray(
+            $request->getModuleName(),
+            $request->getControllerName(),
+            $request->getActionName()
+        );
 
         $this->getCommand()->setAction($action);
-    }
-
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    protected function formatModuleName($name)
-    {
-        $name = $name ? $name : 'default';
-
-        return inflector()->camelize($name);
-    }
-
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    protected function formatControllerName($name)
-    {
-        $name = $name ? $name : 'index';
-
-        return $this->getControllerName($name);
-    }
-
-    /**
-     * @param $controller
-     * @return mixed
-     */
-    protected function getControllerName($controller)
-    {
-        return inflector()->classify($controller);
-    }
-
-    /**
-     * @param boolean $name
-     * @return mixed
-     */
-    protected function formatActionName($name)
-    {
-        $name = inflector()->camelize($name);
-        $name[0] = strtolower($name[0]);
-
-        return $name;
     }
 
     /**

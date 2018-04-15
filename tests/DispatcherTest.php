@@ -37,7 +37,7 @@ class DispatcherTest extends AbstractTest
     {
         $command = new Command();
         $command->setAutoInitRequest(true);
-        $command->getRequest()->query->set('variable', 'value');
+        $command->getRequest(true)->query->set('variable', 'value');
         $command->setAction(
             function (RequestInterface $request, ResponseInterface $response) {
                 return $response->setContent($request->query->get('variable'));
