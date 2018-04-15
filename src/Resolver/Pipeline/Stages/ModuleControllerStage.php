@@ -2,6 +2,8 @@
 
 namespace Nip\Dispatcher\Resolver\Pipeline\Stages;
 
+use Nip\Dispatcher\Resolver\ClassResolver\NameGenerator;
+
 /**
  * Class ModuleControllerStage
  * @package Nip\Dispatcher\Resolver\Pipeline\Stages
@@ -32,6 +34,7 @@ class ModuleControllerStage extends AbstractStage
     }
 
     /**
+     * @throws \Exception
      */
     public function parseActionForController()
     {
@@ -39,10 +42,7 @@ class ModuleControllerStage extends AbstractStage
         $module = isset($action['module']) ? $action['module'] : '';
         $controller = isset($action['controller']) ? $action['controller'] : '';
 
-        $classes = [
-            $this->generateFullControllerNameNamespace($module, $controller),
-            $this->generateFullControllerNameString($module, $controller)
-            ];
+        $classes = NameGenerator::generateClasses($module, $controller);
         $this->saveClassesInAction($classes);
     }
 
@@ -66,73 +66,5 @@ class ModuleControllerStage extends AbstractStage
         $class = $class != null ? $class : [];
         $class = is_array($class) ? $class : [$class];
         return $class;
-    }
-
-
-    /**
-     * @param $module
-     * @param $controller
-     * @return string
-     */
-    protected function generateFullControllerNameNamespace($module, $controller)
-    {
-        $name = $this->generateModuleNameNamespace($module);
-        $name .= '\Controllers\\';
-        $name .= $this->formatControllerName($controller);
-
-        return $name;
-    }
-
-    /**
-     * @param $module
-     * @return string
-     */
-    protected function generateModuleNameNamespace($module)
-    {
-        $name = $this->getRootNamespace() . 'Modules\\';
-        $module = $module == 'Default' ? 'Frontend' : $module;
-        $name .= $module;
-        return $name;
-    }
-
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    protected function formatControllerName($name)
-    {
-        $name = str_replace('_', '\\', $name) . "Controller";
-
-        return $name;
-    }
-
-    /**
-     * @param string $namespaceClass
-     * @return bool
-     */
-    protected function isValidControllerNamespace($namespaceClass)
-    {
-        return class_exists($namespaceClass);
-    }
-
-    /**
-     * @return string
-     */
-    protected function getRootNamespace()
-    {
-        if (function_exists('app')) {
-            return app('app')->getRootNamespace();
-        }
-        return '';
-    }
-
-    /**
-     * @param $module
-     * @param $controller
-     * @return string
-     */
-    protected function generateFullControllerNameString($module, $controller)
-    {
-        return $module . "_" . $controller . "Controller";
     }
 }
