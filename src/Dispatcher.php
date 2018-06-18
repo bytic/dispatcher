@@ -3,19 +3,16 @@
 namespace Nip\Dispatcher;
 
 use Exception;
-use Nip\AutoLoader\AutoLoader;
-use Nip\Controller;
+use Nip\Controllers\Controller;
 use Nip\Dispatcher\Exceptions\ForwardException;
 use Nip\Http\Response\Response;
 use Nip\Request;
 
 /**
- * Class Dispatcher
- * @package Nip\Dispatcher
+ * Class Dispatcher.
  */
 class Dispatcher
 {
-
     /**
      * @var null|Request
      */
@@ -29,6 +26,7 @@ class Dispatcher
 
     /**
      * @param $controller
+     *
      * @return mixed
      */
     public static function reverseControllerName($controller)
@@ -37,7 +35,8 @@ class Dispatcher
     }
 
     /**
-     * @param boolean $name
+     * @param $name
+     *
      * @return mixed
      */
     public static function formatActionName($name)
@@ -50,8 +49,10 @@ class Dispatcher
 
     /**
      * @param Request|null $request
-     * @return null|Response
+     *
      * @throws Exception
+     *
+     * @return null|Response
      */
     public function dispatch(Request $request = null)
     {
@@ -64,7 +65,7 @@ class Dispatcher
 
         if ($this->hops <= $this->maxHops) {
             if ($request->getControllerName() == null) {
-                throw new Exception('No valid controller name in request [' . $request->getMCA() . ']');
+                throw new Exception('No valid controller name in request ['.$request->getMCA().']');
             }
 
             $controller = $this->generateController($request);
@@ -81,7 +82,7 @@ class Dispatcher
                     return $return;
                 }
             } else {
-                throw new Exception('Error finding a valid controller for [' . $request->getMCA() . ']');
+                throw new Exception('Error finding a valid controller for ['.$request->getMCA().']');
             }
         } else {
             throw new Exception("Maximum number of hops ($this->maxHops) has been reached for {$request->getMCA()}");
@@ -106,8 +107,10 @@ class Dispatcher
 
     /**
      * @param Request $request
-     * @return Controller|null
+     *
      * @throws Exception
+     *
+     * @return Controller|null
      */
     public function generateController($request)
     {
@@ -119,17 +122,19 @@ class Dispatcher
             return $this->newController($namespaceClass);
         } else {
             $classicClass = $this->generateFullControllerNameString($module, $controller);
-            if ($this->getAutoloader()->isClass($classicClass)) {
+            if (class_exists($classicClass)) {
                 return $this->newController($classicClass);
             }
         }
+
         throw new Exception(
-            'Error finding a valid controller [' . $namespaceClass . '][' . $classicClass . '] for [' . $request->getMCA() . ']'
+            'Error finding a valid controller ['.$namespaceClass.']['.$classicClass.'] for ['.$request->getMCA().']'
         );
     }
 
     /**
-     * @param string $name
+     * @param $name
+     *
      * @return mixed
      */
     public function formatModuleName($name)
@@ -140,7 +145,8 @@ class Dispatcher
     }
 
     /**
-     * @param string $name
+     * @param $name
+     *
      * @return mixed
      */
     public function formatControllerName($name)
@@ -152,6 +158,7 @@ class Dispatcher
 
     /**
      * @param $controller
+     *
      * @return mixed
      */
     public function getControllerName($controller)
@@ -160,77 +167,29 @@ class Dispatcher
     }
 
     /**
-     * @param $module
-     * @param $controller
-     * @return string
-     */
-    protected function generateFullControllerNameNamespace($module, $controller)
-    {
-        $name = app('app')->getRootNamespace() . 'Modules\\';
-        $module = $module == 'Default' ? 'Frontend' : $module;
-        $name .= $module . '\Controllers\\';
-        $name .= str_replace('_', '\\', $controller) . "Controller";
-
-        return $name;
-    }
-
-    /**
-     * @param string $namespaceClass
-     * @return bool
-     */
-    protected function isValidControllerNamespace($namespaceClass)
-    {
-        return class_exists($namespaceClass);
-//        $loader = $this->getAutoloader()->getPsr4ClassLoader();
-//        $loader->load($namespaceClass);
-//        if ($loader->isLoaded($namespaceClass)) {
-//            return true;
-//        }
-//
-//        return false;
-    }
-
-    /**
-     * @param string $class
+     * @param $class
+     *
      * @return Controller
      */
     public function newController($class)
     {
         $controller = new $class();
-        /** @var Controller $controller */
+        /* @var Controller $controller */
         $controller->setDispatcher($this);
 
         return $controller;
     }
 
     /**
-     * @param $module
-     * @param $controller
-     * @return string
-     */
-    protected function generateFullControllerNameString($module, $controller)
-    {
-        return $module . "_" . $controller . "Controller";
-    }
-
-    /**
-     * @return AutoLoader
-     */
-    protected function getAutoloader()
-    {
-        return app('autoloader');
-    }
-
-    /**
      * @param bool $params
+     *
+     * @throws ForwardException
      */
     public function throwError($params = false)
     {
 //        $this->getFrontController()->getTrace()->add($params);
         $this->setErrorController();
         $this->forward('index');
-
-        return;
     }
 
     /**
@@ -246,10 +205,11 @@ class Dispatcher
     }
 
     /**
-     * @param bool $action
-     * @param bool $controller
-     * @param bool $module
+     * @param bool  $action
+     * @param bool  $controller
+     * @param bool  $module
      * @param array $params
+     *
      * @throws ForwardException
      */
     public function forward($action = false, $controller = false, $module = false, $params = [])
@@ -267,7 +227,7 @@ class Dispatcher
             $this->getRequest()->attributes->add($params);
         }
 
-        throw new ForwardException;
+        throw new ForwardException();
     }
 
     /**
@@ -276,5 +236,50 @@ class Dispatcher
     public function getCurrentController()
     {
         return $this->currentController;
+    }
+
+    /**
+     * @param $module
+     * @param $controller
+     *
+     * @return string
+     */
+    protected function generateFullControllerNameNamespace($module, $controller)
+    {
+        $name = app()->get('kernel')->getRootNamespace().'Modules\\';
+        $module = $module == 'Default' ? 'Frontend' : $module;
+        $name .= $module.'\Controllers\\';
+        $name .= str_replace('_', '\\', $controller).'Controller';
+
+        return $name;
+    }
+
+    /**
+     * @param string $namespaceClass
+     *
+     * @return bool
+     */
+    protected function isValidControllerNamespace($namespaceClass)
+    {
+        return class_exists($namespaceClass);
+    }
+
+    /**
+     * @return \Nip\AutoLoader\AutoLoader
+     */
+    protected function getAutoloader()
+    {
+        return app('autoloader');
+    }
+
+    /**
+     * @param $module
+     * @param $controller
+     *
+     * @return string
+     */
+    protected function generateFullControllerNameString($module, $controller)
+    {
+        return $module.'_'.$controller.'Controller';
     }
 }
