@@ -16,8 +16,7 @@ use Nip\Request;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class Dispatcher
- * @package Nip\Dispatcher
+ * Class Dispatcher.
  */
 class Dispatcher
 {
@@ -30,6 +29,7 @@ class Dispatcher
      * Create a new controller dispatcher instance.
      *
      * @param  Container $container
+     *
      * @return void
      */
     public function __construct(Container $container = null)
@@ -43,6 +43,8 @@ class Dispatcher
      * @param Request|null $request
      * @return ResponseInterface
      * @throws Exception
+     *
+     * @return null|Response
      */
     public function dispatch(Request $request = null)
     {
@@ -118,8 +120,6 @@ class Dispatcher
 //        $this->getFrontController()->getTrace()->add($params);
         $this->setErrorController();
         $this->forward('index');
-
-        return;
     }
 
     /**
@@ -135,10 +135,11 @@ class Dispatcher
     }
 
     /**
-     * @param bool $action
-     * @param bool $controller
-     * @param bool $module
+     * @param bool  $action
+     * @param bool  $controller
+     * @param bool  $module
      * @param array $params
+     *
      * @throws ForwardException
      */
     public function forward($action = false, $controller = false, $module = false, $params = [])
@@ -156,6 +157,6 @@ class Dispatcher
             $this->getRequest()->attributes->add($params);
         }
 
-        throw new ForwardException;
+        throw new ForwardException();
     }
 }
