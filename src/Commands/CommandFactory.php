@@ -12,6 +12,17 @@ use Psr\Http\Message\ServerRequestInterface;
 class CommandFactory
 {
     /**
+     * @param $action
+     * @return Command
+     */
+    public static function createFromAction($action): Command
+    {
+        $command = new Command();
+        $command->setAction($action);
+        return $command;
+    }
+
+    /**
      * @param ServerRequestInterface|null $request
      * @return Command
      */

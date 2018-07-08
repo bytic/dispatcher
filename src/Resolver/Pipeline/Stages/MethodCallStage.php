@@ -36,11 +36,13 @@ class MethodCallStage extends AbstractStage
      */
     protected function callMethod()
     {
+        $command = $this->getCommand();
         /** @var Controller $controllerInstance */
         $controllerInstance = $this->getCommand()->getActionParam('instance');
         $controllerInstance->setRequest($this->getCommand()->getRequest());
-        $method = $this->getCommand()->getActionParam('action');
-        return $controllerInstance->{$method}();
+        $method = $command->getActionParam('action');
+        $params = $command->hasActionParam('params') ? $command->getActionParam('params') : [];
+        return $controllerInstance->{$method}(...$params);
     }
 
     /**

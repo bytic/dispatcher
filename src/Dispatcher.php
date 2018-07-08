@@ -53,6 +53,22 @@ class Dispatcher
         return $this->dispatchCommand($command)->getReturn();
     }
 
+
+    /**
+     * @param $action
+     * @param array $params
+     * @return
+     */
+    public function call($action, $params = [])
+    {
+        $action = is_array($action) ? $action : ['controller' => $action];
+        $action['params'] = $params;
+        $command = CommandFactory::createFromAction($action);
+        return $this->getResolverPipeline(InstanceBuilder::class)
+            ->process($command)
+            ->getReturn();
+    }
+
     /**
      * @param Request|null $request
      * @return
