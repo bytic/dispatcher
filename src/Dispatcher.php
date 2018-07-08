@@ -9,6 +9,7 @@ use Nip\Dispatcher\Commands\Command;
 use Nip\Dispatcher\Commands\CommandFactory;
 use Nip\Dispatcher\Exceptions\ForwardException;
 use Nip\Dispatcher\Resolver\HasResolverPipelineTrait;
+use Nip\Dispatcher\Resolver\Pipeline\InstanceBuilder;
 use Nip\Dispatcher\Traits\HasCommandsCollection;
 use Nip\Dispatcher\Traits\HasRequestTrait;
 use Nip\Request;
@@ -49,7 +50,19 @@ class Dispatcher
         }
 
         $command = CommandFactory::createFromRequest($request);
-        return $this->dispatchCommand($command)->getResponse();
+        return $this->dispatchCommand($command)->getReturn();
+    }
+
+    /**
+     * @param Request|null $request
+     * @return
+     */
+    public function callFromRequest(Request $request = null)
+    {
+        $command = CommandFactory::createFromRequest($request);
+        return $this->getResolverPipeline(InstanceBuilder::class)
+            ->process($command)
+            ->getReturn();
     }
 
     /**

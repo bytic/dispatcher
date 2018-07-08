@@ -4,7 +4,7 @@ namespace Nip\Dispatcher\Tests\Resolver\Pipeline;
 
 use League\Pipeline\Pipeline;
 use League\Pipeline\PipelineInterface;
-use Nip\Dispatcher\Resolver\Pipeline\PipelineBuilder;
+use Nip\Dispatcher\Resolver\Pipeline\ActionBuilder;
 use Nip\Dispatcher\Tests\AbstractTest;
 
 /**
@@ -26,7 +26,7 @@ class PipelineBuilderTest extends AbstractTest
      */
     protected function buildPipeline()
     {
-        $builder = new PipelineBuilder();
+        $builder = new ActionBuilder();
         return $builder->build();
     }
 }

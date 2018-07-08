@@ -3,9 +3,10 @@
 namespace Nip\Dispatcher\Resolver;
 
 use League\Pipeline\InterruptibleProcessor;
+use League\Pipeline\Pipeline;
 use Nip\Dispatcher\Commands\Command;
 use Nip\Dispatcher\Exceptions\ForwardException;
-use Nip\Dispatcher\Resolver\Pipeline\PipelineBuilder;
+use Nip\Dispatcher\Resolver\Pipeline\ActionBuilder;
 use Nip\Dispatcher\Resolver\Pipeline\Stages\StageInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -16,9 +17,9 @@ use Psr\Http\Message\ResponseInterface;
 trait HasResolverPipelineTrait
 {
     /**
-     * @var null|PipelineBuilder
+     * @var Pipeline[]
      */
-    protected $callPipelineBuilder = null;
+    protected $resolverPipeline = [];
 
     /**
      * @param Command $command
@@ -27,48 +28,36 @@ trait HasResolverPipelineTrait
      */
     protected function processCommand(Command $command)
     {
-        $pipeline = $this->buildCallPipeline();
+        $pipeline = $this->getResolverPipeline();
         return $pipeline->process($command);
     }
 
     /**
-     * @return \League\Pipeline\PipelineInterface|\League\Pipeline\Pipeline
+     * @param string $type
+     * @return Pipeline
      */
-    protected function buildCallPipeline()
+    public function getResolverPipeline($type = ActionBuilder::class)
     {
-        return $this->getCallPipelineBuilder()->build();
-    }
-
-    /**
-     * @return PipelineBuilder
-     */
-    public function getCallPipelineBuilder()
-    {
-        if ($this->callPipelineBuilder === null) {
-            $this->initCallPipeline();
+        if (!isset($this->resolverPipeline[$type])) {
+            $this->initResolverPipeline($type);
         }
-        return $this->callPipelineBuilder;
+        return $this->resolverPipeline[$type];
     }
 
     /**
-     * @param StageInterface $stage
+     * @param string $type
      */
-    public function addCallPipeline(StageInterface $stage)
+    protected function initResolverPipeline($type)
     {
-        $this->getCallPipelineBuilder()->add($stage);
+        $this->resolverPipeline[$type] = $this->getResolverBuilder($type)->build();
     }
 
     /**
-     * @param PipelineBuilder $callPipelineBuilder
+     * @param $type
+     * @return ActionBuilder
      */
-    public function setCallPipelineBuilder(PipelineBuilder $callPipelineBuilder): void
+    protected function getResolverBuilder($type)
     {
-        $this->callPipelineBuilder = $callPipelineBuilder;
-    }
-
-
-    public function initCallPipeline()
-    {
-        $this->callPipelineBuilder = (new PipelineBuilder);
+        return (new $type());
     }
 }

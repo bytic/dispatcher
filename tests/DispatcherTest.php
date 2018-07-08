@@ -6,9 +6,6 @@ use Nip\Dispatcher\Dispatcher;
 use Nip\Dispatcher\Commands\Command;
 use Nip\Dispatcher\Exceptions\InvalidCommandException;
 
-use League\Pipeline\PipelineInterface;
-use Nip\Dispatcher\Resolver\Pipeline\PipelineBuilder;
-
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -44,7 +41,7 @@ class DispatcherTest extends AbstractTest
             }
         );
 
-        $response = $this->object->dispatchCommand($command)->getResponse();
+        $response = $this->object->dispatchCommand($command)->getReturn();
         self::assertInstanceOf(ResponseInterface::class, $response);
         self::assertSame('value', $response->getContent());
     }
@@ -57,7 +54,7 @@ class DispatcherTest extends AbstractTest
             ->setModuleName('Frontend')
             ->setControllerName('BaseTrait');
 
-        $response = $this->object->dispatchCommand($command)->getResponse();
+        $response = $this->object->dispatchCommand($command)->getReturn();
         self::assertInstanceOf(ResponseInterface::class, $response);
         self::assertEquals('index response', $response->getContent());
     }

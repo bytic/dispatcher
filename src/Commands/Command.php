@@ -13,8 +13,9 @@ use Nip\Dispatcher\Traits\HasRequestTrait;
 class Command
 {
     use HasRequestTrait;
-    use HasResponseTrait;
     use HasActionTrait;
+
+    protected $return = null;
 
     /**
      * @return string
@@ -30,5 +31,29 @@ class Command
         }
 
         return print_r($this, true);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasReturn()
+    {
+        return $this->return !== null;
+    }
+
+    /**
+     * @return null
+     */
+    public function getReturn()
+    {
+        return $this->return;
+    }
+
+    /**
+     * @param null $return
+     */
+    public function setReturn($return)
+    {
+        $this->return = $return;
     }
 }

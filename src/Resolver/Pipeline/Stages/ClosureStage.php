@@ -18,8 +18,8 @@ class ClosureStage extends AbstractStage
     public function processCommand()
     {
         if ($this->isClosure()) {
-            $response = $this->runClosure();
-            $this->getCommand()->setResponse($response);
+            $return = $this->runClosure();
+            $this->getCommand()->setReturn($return);
         }
     }
 

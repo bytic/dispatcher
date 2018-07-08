@@ -10,14 +10,16 @@ use Nip\Dispatcher\Commands\Command;
 use Nip\Dispatcher\Resolver\Pipeline\Stages\ActionCallStage;
 use Nip\Dispatcher\Resolver\Pipeline\Stages\ClassInstanceStage;
 use Nip\Dispatcher\Resolver\Pipeline\Stages\ClosureStage;
+use Nip\Dispatcher\Resolver\Pipeline\Stages\InstanceReturnStage;
+use Nip\Dispatcher\Resolver\Pipeline\Stages\MethodCallStage;
 use Nip\Dispatcher\Resolver\Pipeline\Stages\ModuleControllerStage;
 use Nip\Dispatcher\Resolver\Pipeline\Stages\RequestStage;
 
 /**
- * Class MethodsPipeline
+ * Class InstanceBuilder
  * @package Nip\Dispatcher\Resolver\Pipeline
  */
-class PipelineBuilder extends AbstractBuilder
+class InstanceBuilder extends AbstractBuilder
 {
     public function __construct()
     {
@@ -25,7 +27,7 @@ class PipelineBuilder extends AbstractBuilder
         $this->add(new RequestStage());
         $this->add(new ModuleControllerStage());
         $this->add(new ClassInstanceStage());
-        $this->add(new ActionCallStage());
+        $this->add(new MethodCallStage());
     }
 
     /**
@@ -40,7 +42,7 @@ class PipelineBuilder extends AbstractBuilder
         if ($processor == null) {
             $processor = new InterruptibleProcessor(
                 function (Command $command) {
-                    return !$command->hasResponse();
+                    return !$command->hasActionParam('instance');
                 }
             );
         }

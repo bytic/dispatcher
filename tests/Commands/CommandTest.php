@@ -29,13 +29,13 @@ class CommandTest extends AbstractTest
     public function testGetSetResponse()
     {
         $command = new Command();
-        self::assertEquals(null, $command->getResponse());
-        self::assertFalse($command->hasResponse());
+        self::assertEquals(null, $command->getReturn());
+        self::assertFalse($command->hasReturn());
 
         $response = new Response();
-        $command->setResponse($response);
-        self::assertTrue($command->hasResponse());
-        self::assertEquals($response, $command->getResponse());
+        $command->setReturn($response);
+        self::assertTrue($command->hasReturn());
+        self::assertEquals($response, $command->getReturn());
     }
 
     /**

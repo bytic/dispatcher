@@ -8,10 +8,10 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * Class ClassInstanceStage
+ * Class MethodCallStage
  * @package Nip\Dispatcher\Resolver\Pipeline\Stages
  */
-class ActionCallStage extends AbstractStage
+class MethodCallStage extends AbstractStage
 {
     /**
      * @return void
@@ -26,7 +26,7 @@ class ActionCallStage extends AbstractStage
             );
         }
 
-        $return = $this->invokeAction();
+        $return = $this->callMethod();
         $this->getCommand()->setReturn($return);
     }
 
@@ -34,15 +34,12 @@ class ActionCallStage extends AbstractStage
      * @return ResponseInterface
      * @throws \Exception
      */
-    protected function invokeAction()
+    protected function callMethod()
     {
         /** @var Controller $controllerInstance */
         $controllerInstance = $this->getCommand()->getActionParam('instance');
         $controllerInstance->setRequest($this->getCommand()->getRequest());
         $method = $this->getCommand()->getActionParam('action');
-        if (method_exists($controllerInstance, 'callAction')) {
-            return $controllerInstance->callAction($method);
-        }
         return $controllerInstance->{$method}();
     }
 

@@ -20,4 +20,12 @@ class BaseTraitController
     {
         return new Response('index response');
     }
+
+    /**
+     * @return string
+     */
+    public function simpleMethod()
+    {
+        return 'method';
+    }
 }

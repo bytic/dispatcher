@@ -33,6 +33,7 @@ class ActionDispatcherMiddleware implements ServerMiddlewareInterface
 
     /**
      * @inheritdoc
+     * @throws \Exception
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $delegate) : ResponseInterface
     {
