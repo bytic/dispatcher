@@ -42,7 +42,7 @@ class InstanceBuilder extends AbstractBuilder
         if ($processor == null) {
             $processor = new InterruptibleProcessor(
                 function (Command $command) {
-                    return !$command->hasActionParam('instance');
+                    return !$command->hasReturn();
                 }
             );
         }

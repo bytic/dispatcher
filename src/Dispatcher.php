@@ -57,13 +57,18 @@ class Dispatcher
     /**
      * @param $action
      * @param array $params
-     * @return
+     * @return mixed
+     * @throws Exception
      */
     public function call($action, $params = [])
     {
         $action = is_array($action) ? $action : ['controller' => $action];
-        $action['params'] = $params;
         $command = CommandFactory::createFromAction($action);
+        if (isset($params['_request'])) {
+            $command->setRequest($params['_request']);
+            unset($params['_request']);
+        }
+        $command->setActionParam('params', $params);
         return $this->getResolverPipeline(InstanceBuilder::class)
             ->process($command)
             ->getReturn();
