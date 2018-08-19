@@ -14,7 +14,6 @@ use Nip\Dispatcher\Dispatcher;
  */
 class HasResolverPipelineTraitTest extends AbstractTest
 {
-
     public function testGetResolverPipeline()
     {
         $dispatcher = new Dispatcher();
