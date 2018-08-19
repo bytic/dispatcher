@@ -14,7 +14,7 @@ class ClassResolverTest extends AbstractTest
 {
     public function testGenerateParamsNamespaced()
     {
-        $controller = ClassResolver::resolveFromParams('frontend','BaseTrait');
+        $controller = ClassResolver::resolveFromParams('frontend', 'BaseTrait');
         self::assertInstanceOf(BaseTraitController::class, $controller);
     }
 }

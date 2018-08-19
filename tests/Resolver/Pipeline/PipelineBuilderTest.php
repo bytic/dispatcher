@@ -13,7 +13,6 @@ use Nip\Dispatcher\Tests\AbstractTest;
  */
 class PipelineBuilderTest extends AbstractTest
 {
-
     public function testBuildCommand()
     {
         $pipeline = $this->buildPipeline();
