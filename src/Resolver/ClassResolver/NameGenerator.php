@@ -53,7 +53,7 @@ class NameGenerator
     protected static function generateModuleNameNamespace($module)
     {
         $name = self::getRootNamespace() . 'Modules\\';
-        $module = $module == 'Default' ? 'Frontend' : $module;
+        $module = strtolower($module) == 'default' ? 'Frontend' : $module;
         $name .= $module;
         return $name;
     }
