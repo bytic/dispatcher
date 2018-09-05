@@ -45,12 +45,4 @@ class ActionCallStage extends AbstractStage
         }
         return $controllerInstance->{$method}();
     }
-
-    /**
-     * @return bool
-     */
-    protected function hasInstanceAction()
-    {
-        return $this->getCommand()->hasActionParam('instance');
-    }
 }

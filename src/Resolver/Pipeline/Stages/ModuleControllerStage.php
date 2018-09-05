@@ -13,10 +13,11 @@ class ModuleControllerStage extends AbstractStage
 
     /**
      * @return void
+     * @throws \Exception
      */
     public function processCommand()
     {
-        if ($this->hasControllerName()) {
+        if (!$this->hasInstanceAction() && $this->hasControllerName()) {
             $this->parseActionForController();
         }
     }

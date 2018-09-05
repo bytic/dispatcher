@@ -46,4 +46,20 @@ abstract class AbstractStage implements StageInterface
     {
         $this->command = $command;
     }
+
+    /**
+     * @return bool
+     */
+    protected function hasClassAction()
+    {
+        return $this->getCommand()->hasActionParam('class');
+    }
+
+    /**
+     * @return bool
+     */
+    protected function hasInstanceAction()
+    {
+        return $this->getCommand()->hasActionParam('instance');
+    }
 }

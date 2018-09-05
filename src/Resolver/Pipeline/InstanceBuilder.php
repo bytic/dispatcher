@@ -14,6 +14,7 @@ use Nip\Dispatcher\Resolver\Pipeline\Stages\InstanceReturnStage;
 use Nip\Dispatcher\Resolver\Pipeline\Stages\MethodCallStage;
 use Nip\Dispatcher\Resolver\Pipeline\Stages\ModuleControllerStage;
 use Nip\Dispatcher\Resolver\Pipeline\Stages\RequestStage;
+use Nip\Dispatcher\Resolver\Pipeline\Stages\ResolverCacheStage;
 
 /**
  * Class InstanceBuilder
@@ -25,6 +26,7 @@ class InstanceBuilder extends AbstractBuilder
     {
         $this->add(new ClosureStage());
         $this->add(new RequestStage());
+        $this->add(new ResolverCacheStage());
         $this->add(new ModuleControllerStage());
         $this->add(new ClassInstanceStage());
         $this->add(new MethodCallStage());

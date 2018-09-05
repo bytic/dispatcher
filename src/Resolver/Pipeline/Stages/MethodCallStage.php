@@ -46,12 +46,4 @@ class MethodCallStage extends AbstractStage
         $params = $command->hasActionParam('params') ? $command->getActionParam('params') : [];
         return $controllerInstance->{$method}(...$params);
     }
-
-    /**
-     * @return bool
-     */
-    protected function hasInstanceAction()
-    {
-        return $this->getCommand()->hasActionParam('instance');
-    }
 }

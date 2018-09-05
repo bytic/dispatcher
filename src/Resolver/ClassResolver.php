@@ -50,7 +50,7 @@ class ClassResolver
      * @param string $class
      * @return Controller
      */
-    protected static function newController($class)
+    public static function newController($class)
     {
         $controller = new $class();
         return $controller;

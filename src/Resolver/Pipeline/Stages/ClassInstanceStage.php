@@ -4,6 +4,7 @@ namespace Nip\Dispatcher\Resolver\Pipeline\Stages;
 
 use Nip\Controllers\Controller;
 use Nip\Dispatcher\Exceptions\InvalidCommandException;
+use Nip\Dispatcher\Resolver\Cache\ResolverCache;
 use Nip\Dispatcher\Resolver\ClassResolver;
 
 /**
@@ -18,17 +19,9 @@ class ClassInstanceStage extends AbstractStage
      */
     public function processCommand()
     {
-        if ($this->hasClassAction()) {
+        if (!$this->hasInstanceAction() && $this->hasClassAction()) {
             $this->buildController();
         }
-    }
-
-    /**
-     * @return bool
-     */
-    protected function hasClassAction()
-    {
-        return $this->getCommand()->hasActionParam('class');
     }
 
     /**
@@ -40,6 +33,8 @@ class ClassInstanceStage extends AbstractStage
         $controller = ClassResolver::resolveFromClasses($controllerNames);
 
         if ($controller) {
+            ResolverCache::setFromAction($this->getCommand()->getAction(), get_class($controller));
+            ResolverCache::save();
             $this->getCommand()->setActionParam('instance', $controller);
             return;
         }
