@@ -4,6 +4,7 @@ namespace Nip\Dispatcher\Resolver\Pipeline\Stages;
 
 use Nip\Controllers\Controller;
 use Nip\Dispatcher\Exceptions\InvalidCommandException;
+use Nip\Dispatcher\Resolver\ClassResolver\NameFormatter;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -39,7 +40,8 @@ class ActionCallStage extends AbstractStage
         /** @var Controller $controllerInstance */
         $controllerInstance = $this->getCommand()->getActionParam('instance');
         $controllerInstance->setRequest($this->getCommand()->getRequest());
-        $method = $this->getCommand()->getActionParam('action');
+        $action = $this->getCommand()->getActionParam('action');
+        $method = NameFormatter::formatActionName($action);
         if (method_exists($controllerInstance, 'callAction')) {
             return $controllerInstance->callAction($method);
         }

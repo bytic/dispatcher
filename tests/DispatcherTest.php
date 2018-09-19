@@ -51,8 +51,8 @@ class DispatcherTest extends AbstractTest
         $command = new Command();
         $command->setAutoInitRequest(true);
         $command->getRequest(true)
-            ->setModuleName('Frontend')
-            ->setControllerName('BaseTrait');
+            ->setModuleName('frontend')
+            ->setControllerName('baseTrait');
 
         $response = $this->object->dispatchCommand($command)->getReturn();
         self::assertInstanceOf(ResponseInterface::class, $response);

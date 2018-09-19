@@ -27,7 +27,7 @@ class NameFormatter
      * @param string $name
      * @return mixed
      */
-    protected static function formatModuleName($name)
+    public static function formatModuleName($name)
     {
         $name = $name ? $name : 'default';
 
@@ -38,7 +38,7 @@ class NameFormatter
      * @param string $name
      * @return mixed
      */
-    protected static function formatControllerName($name)
+    public static function formatControllerName($name)
     {
         $name = $name ? $name : 'index';
 
@@ -58,7 +58,7 @@ class NameFormatter
      * @param boolean $name
      * @return mixed
      */
-    protected static function formatActionName($name)
+    public static function formatActionName($name)
     {
         $name = inflector()->camelize($name);
         $name[0] = strtolower($name[0]);

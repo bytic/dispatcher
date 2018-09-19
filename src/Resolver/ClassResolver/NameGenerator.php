@@ -15,6 +15,8 @@ class NameGenerator
      */
     public static function generateClasses($module, $controller)
     {
+        $module = NameFormatter::formatModuleName($module);
+        $controller = NameFormatter::formatControllerName($controller);
         return [
             self::generateControllerNamespaced($module, $controller),
             self::generateControllerString($module, $controller)

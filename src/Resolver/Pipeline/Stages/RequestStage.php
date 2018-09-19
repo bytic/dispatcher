@@ -24,11 +24,11 @@ class RequestStage extends AbstractStage
     {
         $request = $this->getRequest();
 
-        $action = NameFormatter::formatArray(
-            $request->getModuleName(),
-            $request->getControllerName(),
-            $request->getActionName()
-        );
+        $action = [
+            'module' => $request->getModuleName(),
+            'controller' => $request->getControllerName(),
+            'action' => $request->getActionName()
+        ];
 
         $this->getCommand()->setAction($action);
     }
