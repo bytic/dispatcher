@@ -43,6 +43,11 @@ class ModuleControllerStage extends AbstractStage
         $module = isset($action['module']) ? $action['module'] : '';
         $controller = isset($action['controller']) ? $action['controller'] : '';
 
+        if (class_exists($controller)) {
+            $this->getCommand()->setActionParam('class', [$controller]);
+            return;
+        }
+
         $classes = NameGenerator::generateClasses($module, $controller);
         $this->saveClassesInAction($classes);
     }
