@@ -2,6 +2,7 @@
 
 namespace Nip\Dispatcher\Resolver\Pipeline\Stages;
 
+use Nip\Controllers\Controller;
 use Nip\Dispatcher\Resolver\ClassResolver\NameGenerator;
 
 /**
@@ -43,7 +44,7 @@ class ModuleControllerStage extends AbstractStage
         $module = isset($action['module']) ? $action['module'] : '';
         $controller = isset($action['controller']) ? $action['controller'] : '';
 
-        if (class_exists($controller)) {
+        if (class_exists($controller) && is_subclass_of($controller, Controller::class)) {
             $this->getCommand()->setActionParam('class', [$controller]);
             return;
         }
