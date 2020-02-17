@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpDocMissingThrowsInspection */
 
 namespace Nip\Dispatcher\Commands\Traits;
 
@@ -31,17 +31,25 @@ trait HasActionTrait
      */
     public function hasAction()
     {
-        return $this->action !== null;
+        if ($this->action === null) {
+            return false;
+        }
+        if (is_array($this->action)) {
+            if (!isset($this->action['action'])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
      * @param $name
      * @param $value
      * @return void
-     * @throws \Exception
      */
     public function setActionParam($name, $value)
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
         $this->guardActionAsArray();
 
         $this->action[$name] = $value;

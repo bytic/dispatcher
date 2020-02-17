@@ -2,8 +2,6 @@
 
 namespace Nip\Dispatcher\Resolver\Pipeline\Stages;
 
-use Nip\Dispatcher\Resolver\ClassResolver\NameFormatter;
-
 /**
  * Class ClosureStage
  * @package Nip\Dispatcher\Resolver\Pipeline\Stages
@@ -24,13 +22,9 @@ class RequestStage extends AbstractStage
     {
         $request = $this->getRequest();
 
-        $action = [
-            'module' => $request->getModuleName(),
-            'controller' => $request->getControllerName(),
-            'action' => $request->getActionName()
-        ];
-
-        $this->getCommand()->setAction($action);
+        $this->getCommand()->setActionParam('module', $request->getModuleName());
+        $this->getCommand()->setActionParam('controller', $request->getControllerName());
+        $this->getCommand()->setActionParam('action', $request->getActionName());
     }
 
     /**

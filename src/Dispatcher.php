@@ -13,6 +13,7 @@ use Nip\Dispatcher\Resolver\Pipeline\InstanceBuilder;
 use Nip\Dispatcher\Traits\HasCommandsCollection;
 use Nip\Dispatcher\Traits\HasRequestTrait;
 use Nip\Request;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * Class Dispatcher
@@ -40,7 +41,7 @@ class Dispatcher
 
     /**
      * @param Request|null $request
-     * @return \Psr\Http\Message\ResponseInterface
+     * @return ResponseInterface
      * @throws Exception
      */
     public function dispatch(Request $request = null)
@@ -76,11 +77,14 @@ class Dispatcher
 
     /**
      * @param Request|null $request
+     * @param array $params
      * @return
+     * @throws Exception
      */
-    public function callFromRequest(Request $request = null)
+    public function callFromRequest(Request $request = null, $params = [])
     {
         $command = CommandFactory::createFromRequest($request);
+        $command->setActionParam('params', $params);
         return $this->getResolverPipeline(InstanceBuilder::class)
             ->process($command)
             ->getReturn();
@@ -107,6 +111,7 @@ class Dispatcher
 
     /**
      * @param bool $params
+     * @throws ForwardException
      */
     public function throwError($params = false)
     {
