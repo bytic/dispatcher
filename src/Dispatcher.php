@@ -30,6 +30,7 @@ class Dispatcher
      *
      * @param  Container $container
      *
+     *
      * @return void
      */
     public function __construct(Container $container = null)
@@ -158,5 +159,50 @@ class Dispatcher
         }
 
         throw new ForwardException();
+    }
+
+    /**
+     * @param $module
+     * @param $controller
+     *
+     * @return string
+     */
+    protected function generateFullControllerNameNamespace($module, $controller)
+    {
+        $name = app()->get('kernel')->getRootNamespace().'Modules\\';
+        $module = $module == 'Default' ? 'Frontend' : $module;
+        $name .= $module.'\Controllers\\';
+        $name .= str_replace('_', '\\', $controller).'Controller';
+
+        return $name;
+    }
+
+    /**
+     * @param string $namespaceClass
+     *
+     * @return bool
+     */
+    protected function isValidControllerNamespace($namespaceClass)
+    {
+        return class_exists($namespaceClass);
+    }
+
+    /**
+     * @return \Nip\AutoLoader\AutoLoader
+     */
+    protected function getAutoloader()
+    {
+        return app('autoloader');
+    }
+
+    /**
+     * @param $module
+     * @param $controller
+     *
+     * @return string
+     */
+    protected function generateFullControllerNameString($module, $controller)
+    {
+        return $module.'_'.$controller.'Controller';
     }
 }
