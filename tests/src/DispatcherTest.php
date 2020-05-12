@@ -2,10 +2,9 @@
 
 namespace Nip\Dispatcher\Tests;
 
-use Nip\Dispatcher\Dispatcher;
 use Nip\Dispatcher\Commands\Command;
+use Nip\Dispatcher\Dispatcher;
 use Nip\Dispatcher\Exceptions\InvalidCommandException;
-
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -59,7 +58,7 @@ class DispatcherTest extends AbstractTest
         self::assertEquals('index response', $response->getContent());
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->object = new Dispatcher();
