@@ -105,10 +105,9 @@ class Dispatcher
         try {
             return $this->processCommand($command);
         } catch (ForwardException $exception) {
-            $command = CommandFactory::createFromForwardExecption($exception);
-            $return = $this->dispatchCommand($command);
-
-            return $return;
+            $command = CommandFactory::createFromForwardException($exception);
+            $command->setRequest($this->getRequest());
+            return $this->dispatchCommand($command);
         }
     }
 

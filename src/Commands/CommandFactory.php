@@ -26,7 +26,7 @@ class CommandFactory
      * @param ServerRequestInterface|null $request
      * @return Command
      */
-    public static function createFromRequest(ServerRequestInterface $request = null): Command
+    public static function createFromRequest(ServerRequestInterface $request): Command
     {
         $command = new Command();
         $command->setRequest($request);
@@ -37,7 +37,7 @@ class CommandFactory
      * @param ForwardException $exception
      * @return Command
      */
-    public static function createFromForwardExecption(ForwardException $exception)
+    public static function createFromForwardException(ForwardException $exception)
     {
         $command = new Command();
         return $command;
