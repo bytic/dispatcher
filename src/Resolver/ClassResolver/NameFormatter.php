@@ -8,7 +8,6 @@ namespace Nip\Dispatcher\Resolver\ClassResolver;
  */
 class NameFormatter
 {
-
     /**
      * @param $module
      * @param $controller

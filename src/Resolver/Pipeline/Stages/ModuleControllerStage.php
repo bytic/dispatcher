@@ -11,7 +11,6 @@ use Nip\Dispatcher\Resolver\ClassResolver\NameGenerator;
  */
 class ModuleControllerStage extends AbstractStage
 {
-
     /**
      * @return void
      * @throws \Exception

@@ -11,7 +11,6 @@ use Nip\Dispatcher\Resolver\ClassResolver;
  */
 class ResolverCacheStage extends AbstractStage
 {
-
     /**
      * @return void
      * @throws \Exception

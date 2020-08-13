@@ -13,7 +13,6 @@ use Psr\Http\Server\RequestHandlerInterface;
  */
 class ActionDispatcherMiddleware implements ServerMiddlewareInterface
 {
-
     /**
      * The session manager.
      *
@@ -35,7 +34,7 @@ class ActionDispatcherMiddleware implements ServerMiddlewareInterface
      * @inheritdoc
      * @throws \Exception
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $delegate) : ResponseInterface
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $delegate): ResponseInterface
     {
         return $this->getDispatcher()->dispatch($request);
     }
