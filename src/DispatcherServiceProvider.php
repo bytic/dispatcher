@@ -12,6 +12,14 @@ class DispatcherServiceProvider extends AbstractSignatureServiceProvider
     /**
      * {@inheritdoc}
      */
+    public function provides()
+    {
+        return ['dispatcher', Dispatcher::class];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function register()
     {
         $this->registerDispatcher();
@@ -19,8 +27,10 @@ class DispatcherServiceProvider extends AbstractSignatureServiceProvider
 
     protected function registerDispatcher()
     {
-        $dispatcher = self::newDispatcher();
-        $this->getContainer()->share('dispatcher', $dispatcher);
+        $this->getContainer()->alias('dispatcher', Dispatcher::class);
+        $this->getContainer()->share('dispatcher', function() {
+            return self::newDispatcher();
+        });
     }
 
     /**
@@ -29,13 +39,5 @@ class DispatcherServiceProvider extends AbstractSignatureServiceProvider
     public static function newDispatcher()
     {
         return new Dispatcher();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function provides()
-    {
-        return ['dispatcher'];
     }
 }

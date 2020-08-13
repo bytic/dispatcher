@@ -63,7 +63,7 @@ class FileManager
      */
     public static function filePathBase()
     {
-        return function_exists('app')
+        return function_exists('app') && app()->has('path.storage')
             ? app('path.storage') . DIRECTORY_SEPARATOR . 'cache'
             : dirname(dirname(dirname(__DIR__))) . '/cache';
     }

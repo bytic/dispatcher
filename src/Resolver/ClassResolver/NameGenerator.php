@@ -75,7 +75,7 @@ class NameGenerator
      */
     protected static function getRootNamespace()
     {
-        if (function_exists('app')) {
+        if (function_exists('app') && app()->has('app')) {
             return app('app')->getRootNamespace();
         }
         return '';
