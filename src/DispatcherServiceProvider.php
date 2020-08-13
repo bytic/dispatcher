@@ -28,7 +28,7 @@ class DispatcherServiceProvider extends AbstractSignatureServiceProvider
     protected function registerDispatcher()
     {
         $this->getContainer()->alias('dispatcher', Dispatcher::class);
-        $this->getContainer()->share('dispatcher', function() {
+        $this->getContainer()->share('dispatcher', function () {
             return self::newDispatcher();
         });
     }
