@@ -3,7 +3,7 @@
 namespace Nip\Dispatcher\Commands;
 
 use Nip\Dispatcher\Commands\Traits\HasActionTrait;
-use Nip\Dispatcher\Commands\Traits\HasResponseTrait;
+//use Nip\Dispatcher\Commands\Traits\HasResponseTrait;
 use Nip\Dispatcher\Traits\HasRequestTrait;
 
 /**
