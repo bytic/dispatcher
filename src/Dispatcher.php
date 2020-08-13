@@ -168,10 +168,10 @@ class Dispatcher
      */
     protected function generateFullControllerNameNamespace($module, $controller)
     {
-        $name = app()->get('kernel')->getRootNamespace().'Modules\\';
+        $name = app()->get('kernel')->getRootNamespace() . 'Modules\\';
         $module = $module == 'Default' ? 'Frontend' : $module;
-        $name .= $module.'\Controllers\\';
-        $name .= str_replace('_', '\\', $controller).'Controller';
+        $name .= $module . '\Controllers\\';
+        $name .= str_replace('_', '\\', $controller) . 'Controller';
 
         return $name;
     }
@@ -202,6 +202,6 @@ class Dispatcher
      */
     protected function generateFullControllerNameString($module, $controller)
     {
-        return $module.'_'.$controller.'Controller';
+        return $module . '_' . $controller . 'Controller';
     }
 }

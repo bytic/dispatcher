@@ -11,7 +11,6 @@ use Nip\Dispatcher\Resolver\ClassResolver\NameGenerator;
  */
 class ClassResolver
 {
-
     /**
      * @param $module
      * @param $controller

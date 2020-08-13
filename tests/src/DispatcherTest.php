@@ -14,7 +14,6 @@ use Psr\Http\Message\ResponseInterface;
  */
 class DispatcherTest extends AbstractTest
 {
-
     /**
      * @var Dispatcher
      */

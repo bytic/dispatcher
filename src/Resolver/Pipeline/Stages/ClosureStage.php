@@ -11,7 +11,6 @@ use Nip\Http\Response\Response;
  */
 class ClosureStage extends AbstractStage
 {
-
     /**
      * @return void
      */
