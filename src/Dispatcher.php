@@ -12,7 +12,7 @@ use Nip\Dispatcher\Resolver\HasResolverPipelineTrait;
 use Nip\Dispatcher\Resolver\Pipeline\InstanceBuilder;
 use Nip\Dispatcher\Traits\HasCommandsCollection;
 use Nip\Dispatcher\Traits\HasRequestTrait;
-use Nip\Request;
+use Nip\Http\Request;
 use Psr\Http\Message\ResponseInterface;
 
 /**
