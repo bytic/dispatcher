@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Nip\Dispatcher\Tests;
 
@@ -35,7 +36,8 @@ class DispatcherTest extends AbstractTest
         $command->getRequest(true)->query->set('variable', 'value');
         $command->setAction(
             function (RequestInterface $request, ResponseInterface $response) {
-                return $response->setContent($request->query->get('variable'));
+                $response->setContent($request->query->get('variable'));
+                return $response;
             }
         );
 

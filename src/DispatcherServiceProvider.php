@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Nip\Dispatcher;
 
@@ -9,12 +10,17 @@ use Nip\Container\ServiceProviders\Providers\AbstractSignatureServiceProvider;
  */
 class DispatcherServiceProvider extends AbstractSignatureServiceProvider
 {
+    public const SERVICE_DISPATCHER = 'dispatcher';
+
     /**
      * {@inheritdoc}
      */
     public function provides()
     {
-        return ['dispatcher', Dispatcher::class];
+        return [
+            static::SERVICE_DISPATCHER,
+            Dispatcher::class
+        ];
     }
 
     /**

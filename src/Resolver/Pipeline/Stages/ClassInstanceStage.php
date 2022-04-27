@@ -1,8 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace Nip\Dispatcher\Resolver\Pipeline\Stages;
 
-use Nip\Controllers\Controller;
 use Nip\Dispatcher\Exceptions\InvalidCommandException;
 use Nip\Dispatcher\Resolver\Cache\ResolverCache;
 use Nip\Dispatcher\Resolver\ClassResolver;

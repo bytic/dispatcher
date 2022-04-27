@@ -1,6 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Nip\Dispatcher\Resolver\ClassResolver;
+
+use Nip\Utility\Traits\SingletonTrait;
 
 /**
  * Class NameGenerator
@@ -8,6 +11,11 @@ namespace Nip\Dispatcher\Resolver\ClassResolver;
  */
 class NameGenerator
 {
+    use SingletonTrait;
+
+    protected array $namespaces = [];
+
+
     /**
      * @param $module
      * @param $controller
@@ -17,10 +25,10 @@ class NameGenerator
     {
         $module = NameFormatter::formatModuleName($module);
         $controller = NameFormatter::formatControllerName($controller);
-        return [
-            self::generateControllerNamespaced($module, $controller),
-            self::generateControllerString($module, $controller)
-        ];
+
+        $return = self::instance()->generateControllerNamespacedVariations($module, $controller);
+        $return[] =  self::generateControllerString($module, $controller);
+        return $return;
     }
 
     /**
@@ -28,9 +36,9 @@ class NameGenerator
      * @param $controller
      * @return string
      */
-    public static function generateControllerNamespaced($module, $controller)
+    public static function generateControllerNamespaced($module, $controller, $namespace = null)
     {
-        $name = static::generateModuleNameNamespace($module);
+        $name = static::generateModuleNameNamespace($module, $namespace);
         $name .= '\Controllers\\';
         $name .= static::formatControllerName($controller);
 
@@ -49,12 +57,33 @@ class NameGenerator
     }
 
     /**
+     * @param $namespace
+     */
+    public function addNamespace($namespace)
+    {
+        $this->namespaces[] = $namespace;
+    }
+
+    public function addNamespaces(array $namespaces)
+    {
+        foreach ($namespaces as $namespace) {
+            $this->addNamespace($namespace);
+        }
+    }
+
+    protected function __construct($namespaces = [''])
+    {
+        $this->namespaces = $namespaces;
+    }
+
+    /**
      * @param $module
      * @return string
      */
-    protected static function generateModuleNameNamespace($module)
+    protected static function generateModuleNameNamespace($module, $namespace = null)
     {
-        $name = self::getRootNamespace() . 'Modules\\';
+        $namespace = $namespace ?: reset(self::instance()->namespaces);
+        $name = $namespace . 'Modules\\';
         $module = strtolower($module) == 'default' ? 'Frontend' : $module;
         $name .= $module;
         return $name;
@@ -70,14 +99,15 @@ class NameGenerator
 
         return $name;
     }
-    /**
-     * @return string
-     */
-    protected static function getRootNamespace()
+
+    protected function generateControllerNamespacedVariations(mixed $module, mixed $controller): array
     {
-        if (function_exists('app') && app()->has('app')) {
-            return app('app')->getRootNamespace();
+        $return = [];
+        foreach ($this->namespaces as $namespace) {
+            $return[] = static::generateControllerNamespaced($module, $controller, $namespace);
         }
-        return '';
+        return $return;
     }
+
+
 }

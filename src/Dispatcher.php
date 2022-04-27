@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Nip\Dispatcher;
 
@@ -7,13 +8,16 @@ use Nip\Container\Container;
 use Nip\Container\ContainerAwareTrait;
 use Nip\Dispatcher\Commands\Command;
 use Nip\Dispatcher\Commands\CommandFactory;
+use Nip\Dispatcher\Configuration\HasConfigurationTrait;
 use Nip\Dispatcher\Exceptions\ForwardException;
+use Nip\Dispatcher\Resolver\ClassResolver\NameGenerator;
 use Nip\Dispatcher\Resolver\HasResolverPipelineTrait;
 use Nip\Dispatcher\Resolver\Pipeline\InstanceBuilder;
 use Nip\Dispatcher\Traits\HasCommandsCollection;
 use Nip\Dispatcher\Traits\HasRequestTrait;
 use Nip\Http\Request;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class Dispatcher.
@@ -21,6 +25,7 @@ use Psr\Http\Message\ResponseInterface;
 class Dispatcher
 {
     use ContainerAwareTrait;
+    use HasConfigurationTrait;
     use HasResolverPipelineTrait;
     use HasRequestTrait;
     use HasCommandsCollection;
@@ -49,6 +54,7 @@ class Dispatcher
      */
     public function dispatch(Request $request = null)
     {
+        NameGenerator::instance()->addNamespaces($this->getConfiguration()->getNamespaces());
         if ($request) {
             $this->setRequest($request);
         }
@@ -158,50 +164,5 @@ class Dispatcher
         }
 
         throw new ForwardException();
-    }
-
-    /**
-     * @param $module
-     * @param $controller
-     *
-     * @return string
-     */
-    protected function generateFullControllerNameNamespace($module, $controller)
-    {
-        $name = app()->get('kernel')->getRootNamespace() . 'Modules\\';
-        $module = $module == 'Default' ? 'Frontend' : $module;
-        $name .= $module . '\Controllers\\';
-        $name .= str_replace('_', '\\', $controller) . 'Controller';
-
-        return $name;
-    }
-
-    /**
-     * @param string $namespaceClass
-     *
-     * @return bool
-     */
-    protected function isValidControllerNamespace($namespaceClass)
-    {
-        return class_exists($namespaceClass);
-    }
-
-    /**
-     * @return \Nip\AutoLoader\AutoLoader
-     */
-    protected function getAutoloader()
-    {
-        return app('autoloader');
-    }
-
-    /**
-     * @param $module
-     * @param $controller
-     *
-     * @return string
-     */
-    protected function generateFullControllerNameString($module, $controller)
-    {
-        return $module . '_' . $controller . 'Controller';
     }
 }
