@@ -100,7 +100,7 @@ class NameGenerator
         return $name;
     }
 
-    protected function generateControllerNamespacedVariations(mixed $module, mixed $controller): array
+    protected function generateControllerNamespacedVariations($module,$controller): array
     {
         $return = [];
         foreach ($this->namespaces as $namespace) {
