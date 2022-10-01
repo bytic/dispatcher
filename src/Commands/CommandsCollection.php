@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Nip\Dispatcher\Commands;
 
@@ -61,7 +62,7 @@ class CommandsCollection implements ArrayAccess, Iterator
     /**
      * @inheritdoc
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->items[$offset]);
     }
@@ -69,7 +70,7 @@ class CommandsCollection implements ArrayAccess, Iterator
     /**
      * @inheritdoc
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->items[$offset];
     }
@@ -78,7 +79,7 @@ class CommandsCollection implements ArrayAccess, Iterator
      * @inheritdoc
      * @param Command $value
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value):void
     {
         if ($offset == null) {
             $this->items[] = $value;
@@ -96,7 +97,7 @@ class CommandsCollection implements ArrayAccess, Iterator
     /**
      * @inheritdoc
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->items[$offset]);
         $this->hops = count($this);
