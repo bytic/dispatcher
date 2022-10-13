@@ -6,6 +6,7 @@ namespace Nip\Dispatcher\Commands;
 use ArrayAccess;
 use Exception;
 use Iterator;
+use Nip\Collections\Traits\ArrayAccessTrait;
 
 /**
  * Class CommandsStack
@@ -13,6 +14,8 @@ use Iterator;
  */
 class CommandsCollection implements ArrayAccess, Iterator
 {
+    use ArrayAccessTrait;
+
     protected $items = [];
 
     protected $hops = 0;
@@ -57,22 +60,6 @@ class CommandsCollection implements ArrayAccess, Iterator
     public function setHops(int $hops)
     {
         $this->hops = $hops;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function offsetExists($offset): bool
-    {
-        return isset($this->items[$offset]);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function offsetGet($offset): mixed
-    {
-        return $this->items[$offset];
     }
 
     /**
