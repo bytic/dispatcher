@@ -30,11 +30,10 @@
     "bytic/pipeline": "^1.0|^2.0"
   },
   "require-dev": {
-    "bytic/phpqatools": "^1.0",
-    "bytic/controllers": "^0.9|^1.0|^2.0"
+    "bytic/phpqatools": "^1.0"
   },
   "suggest": {
-    "bytic/controllers": "^1.0"
+    "bytic/controllers": "Required for ByTIC controller integration (^0.9, ^1.0 or ^2.0); current releases restrict Symfony to 7 or earlier."
   },
   "prefer-stable": true,
   "minimum-stability": "dev",

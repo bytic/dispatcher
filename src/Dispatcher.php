@@ -17,6 +17,7 @@ use Nip\Dispatcher\Traits\HasCommandsCollection;
 use Nip\Dispatcher\Traits\HasRequestTrait;
 use Nip\Http\Request;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -46,13 +47,13 @@ class Dispatcher
     }
 
     /**
-     * @param Request|null $request
+     * @param Request|ServerRequestInterface|null $request
      * @return ResponseInterface
      * @throws Exception
      *
      * @return null|Response
      */
-    public function dispatch(Request $request = null)
+    public function dispatch(Request|ServerRequestInterface|null $request = null)
     {
         NameGenerator::instance()->addNamespaces($this->getConfiguration()->getNamespaces());
         if ($request) {
@@ -85,12 +86,12 @@ class Dispatcher
     }
 
     /**
-     * @param Request|null $request
+     * @param Request|ServerRequestInterface|null $request
      * @param array $params
      * @return
      * @throws Exception
      */
-    public function callFromRequest(Request $request = null, $params = [])
+    public function callFromRequest(Request|ServerRequestInterface|null $request = null, $params = [])
     {
         $command = CommandFactory::createFromRequest($request);
         $command->setActionParam('params', $params);

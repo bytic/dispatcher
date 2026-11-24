@@ -2,18 +2,10 @@
 
 namespace Modules\Frontend\Controllers;
 
-use Nip\Controllers\Controller;
-use Nip\Controllers\Traits\BaseControllerTrait;
 use Nip\Http\Response\Response;
 
-/**
- * Class BaseTraitController
- * @package Modules\Frontend\Controllers
- */
-class BaseTraitController extends Controller
+trait FixtureActions
 {
-    use BaseControllerTrait;
-
     /**
      * @return Response
      */
@@ -28,5 +20,21 @@ class BaseTraitController extends Controller
     public function simpleMethod()
     {
         return 'method';
+    }
+}
+
+if (class_exists(\Nip\Controllers\Controller::class)) {
+    class BaseTraitController extends \Nip\Controllers\Controller
+    {
+        use FixtureActions;
+    }
+} else {
+    class BaseTraitController
+    {
+        use FixtureActions;
+
+        public function setRequest($request)
+        {
+        }
     }
 }
