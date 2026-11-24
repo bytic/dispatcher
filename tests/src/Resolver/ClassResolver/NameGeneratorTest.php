@@ -27,7 +27,7 @@ class NameGeneratorTest extends AbstractTest
     /**
      * @return array
      */
-    public function generateClassesData()
+    public static function generateClassesData()
     {
         return [
             ['organizers', 'events', ['Modules\Organizers\Controllers\EventsController', 'Organizers_EventsController']]

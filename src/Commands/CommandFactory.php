@@ -3,6 +3,7 @@
 namespace Nip\Dispatcher\Commands;
 
 use Nip\Dispatcher\Exceptions\ForwardException;
+use Nip\Http\Request;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
@@ -23,10 +24,10 @@ class CommandFactory
     }
 
     /**
-     * @param ServerRequestInterface|null $request
+     * @param Request|ServerRequestInterface $request
      * @return Command
      */
-    public static function createFromRequest(ServerRequestInterface $request): Command
+    public static function createFromRequest(Request|ServerRequestInterface $request): Command
     {
         $command = new Command();
         $command->setRequest($request);

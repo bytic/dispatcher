@@ -3,9 +3,12 @@
 namespace Nip\Dispatcher\Tests\Commands;
 
 use Nip\Dispatcher\Commands\Command;
+use Nip\Dispatcher\Commands\CommandFactory;
 use Nip\Dispatcher\Tests\AbstractTest;
+use Nip\Http\Request as HttpRequest;
 use Nip\Http\Response\Response;
 use Nip\Request;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Class CommandTest
@@ -36,6 +39,24 @@ class CommandTest extends AbstractTest
         $command->setReturn($response);
         self::assertTrue($command->hasReturn());
         self::assertEquals($response, $command->getReturn());
+    }
+
+    public function testFactoryAcceptsSymfonyBackedByticRequest()
+    {
+        $request = new HttpRequest();
+        $command = CommandFactory::createFromRequest($request);
+
+        self::assertTrue($command->hasRequest());
+        self::assertSame($request, $command->getRequest());
+    }
+
+    public function testFactoryAcceptsPsrServerRequest()
+    {
+        $request = $this->createMock(ServerRequestInterface::class);
+        $command = CommandFactory::createFromRequest($request);
+
+        self::assertTrue($command->hasRequest());
+        self::assertSame($request, $command->getRequest());
     }
 
     /**

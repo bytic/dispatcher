@@ -3,6 +3,10 @@
 namespace Nip\Dispatcher\Resolver\Pipeline\Stages;
 
 use Nip\Dispatcher\Commands\Command;
+use Nip\Controllers\Controller;
+use Nip\Http\Request;
+use Nip\Http\Request\PsrRequest;
+use Psr\Http\Message\RequestInterface;
 
 /**
  * Class AbstractStage
@@ -61,5 +65,14 @@ abstract class AbstractStage implements StageInterface
     protected function hasInstanceAction()
     {
         return $this->getCommand()->hasActionParam('instance');
+    }
+
+    protected function setControllerRequest($controller, $request)
+    {
+        if ($controller instanceof Controller && $request instanceof Request && !$request instanceof RequestInterface) {
+            $request = new PsrRequest($request, false);
+        }
+
+        $controller->setRequest($request);
     }
 }
