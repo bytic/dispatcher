@@ -58,6 +58,10 @@ class Dispatcher
         NameGenerator::instance()->addNamespaces($this->getConfiguration()->getNamespaces());
         if ($request) {
             $this->setRequest($request);
+            if (!$this->hasContainer()) {
+                $this->initContainer();
+            }
+            $this->getContainer()->share('request', $request);
         }
 
         $command = CommandFactory::createFromRequest($request);
